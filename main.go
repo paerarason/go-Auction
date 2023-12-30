@@ -13,8 +13,7 @@ func main(){
 	http.HandleFunc("/",ws.WEBsocket)
 	http.HandleFunc("/login",)
     
-	
-	err := http.ListenAndServe(":3333", nil)  
+    err := http.ListenAndServe(":3333", nil)  
 	if err==nil{
 		log.Println("SERVER RUNNING On port 3333")
 	}
