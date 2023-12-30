@@ -11,6 +11,7 @@ type Server struct {
 }
 
 func (ser *Server) Subscribe(topic string,conn *websocket.Conn) {
+	
     append(ser.subscription[topic],)
 }
 
@@ -28,7 +29,6 @@ func (s *Server) SendWithWait(conn *websocket.Conn, message string, wg *sync.Wai
 	conn.WriteMessage(websocket.TextMessage, []byte(message))
 	wg.Done()
 }
-
 
 func (s *Server) ProcessMessage(conn *websocket.Conn,clientID string,msg byte[]) {
     m := Message{}

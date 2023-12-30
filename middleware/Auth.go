@@ -8,7 +8,6 @@ import (
 	//"fmt"
 	"log"
 	//"os"
-
 )
 
 type Claims struct {
@@ -16,9 +15,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-
 func JWTokenMiddlerware{
-
 	tokenString, err := c.Cookie("token")
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
@@ -38,8 +35,6 @@ func JWTokenMiddlerware{
          c.Set("account_id", claims["account_id"])
 	     c.Next()
 	 }
-
-	
 }
 
 

@@ -19,16 +19,10 @@ caCertPool := x509.NewCertPool()
 caCertPool.AppendCertsFromPEM(caCert)
 
 client := redis.NewClient(&redis.Options{
-    Addr:     "my-redis.cloud.redislabs.com:6379",
-    Username: "default", // use your Redis user. More info https://redis.io/docs/management/security/acl/
-    Password: "secret", // use your Redis password
-    TLSConfig: &tls.Config{
-        MinVersion:   tls.VersionTLS12,
-        Certificates: []tls.Certificate{cert},
-        RootCAs:      caCertPool,
-    },
-})
-
+        Addr:     "your_redis_host:your_redis_port", // Replace with your Redis server's address
+        Password: "your_password_here",              // Replace with your Redis password
+        DB:       0,                                 // Use default DB or specify the desired database number
+    })
 //send SET command
 err = client.Set(ctx, "foo", "bar", 0).Err()
 if err != nil {

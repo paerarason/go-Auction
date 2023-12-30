@@ -8,6 +8,7 @@ import (
 	"github.com/paerarason/go-Auction/controller"
 )
 
+
 server:=&Server{subscriptionubscriptions: make(Subscription)}
 
 func WEBsocket(w http.ResponseWriter, r *http.Request) {
@@ -30,6 +31,7 @@ func WEBsocket(w http.ResponseWriter, r *http.Request) {
 			server.RemoveClient(clientID)
 			break
 		}
-		server.ProcessMessage(conn,clientID,msg)
-}
+		server.ProcessMessage(conn,clientID,msg) 
+	}
+
 }
