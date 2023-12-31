@@ -69,6 +69,7 @@ func GenerateToken() {
 	expirationTime := time.Now().Add(10 * time.Hours)
 	claims := jwt.MapClaims{
         "account_id": accountID,
+		"username": username
 		"exp":expirationTime.Unix(),
     }
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,claims)

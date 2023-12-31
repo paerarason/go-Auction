@@ -1,8 +1,13 @@
 package ws 
+import (
+	"sync"
+)
+
 const (
 	publish     = "publish"
 	subscribe   = "subscribe"
 	unsubscribe = "unsubscribe"
+	bid         = "bidding"
 )
 
 type Server struct {
@@ -30,20 +35,57 @@ func (s *Server) SendWithWait(conn *websocket.Conn, message string, wg *sync.Wai
 	wg.Done()
 }
 
+func (s *Server) Publish(topic string, message [] byte ){
+	Clients, err := client.Get(ctx,topic).Result()
+	if err != nil {
+		panic(err)
+	}
+
+	var wg sync.WaitGroup
+	for _,conn:=range Clients {
+	   wg.Add(1)
+       go s.SendWithWait(conn,message,&wg)
+	}
+	wg.Wait()
+
+}
+
+
 func (s *Server) ProcessMessage(conn *websocket.Conn,clientID string,msg byte[]) {
     m := Message{}
 	if err := json.Unmarshal(msg, &m); err != nil {
 		s.Send(conn, errInvalidMessage)
 	}
     action := strings.TrimSpace(strings.ToLower(m.action))
+	
 	switch action {
-	case publish:
-		s.Publish(m.Topic, []byte(m.Message))
-	case subscribe:
-		s.Subscribe(conn, clientID, m.Topic)
-	case unsubscribe:
-		s.Unsubscribe(clientID, m.Topic)
-	default:
-		s.Send(conn, errActionUnrecognizable)
+		
+	    case publish:
+			s.Publish(m.Topic, []byte(m.Message))
+
+		case subscribe:
+			s.Subscribe(conn, clientID, m.Topic)
+			
+		case unsubscribe:
+			s.Unsubscribe(clientID, m.Topic)
+			
+		case bid:
+			s.Unsubscribe(clientID, m.Topic)
+			
+		default:
+			s.Send(conn, errActionUnrecognizable)
+	}
+}
+
+
+//BIDDING 
+func (s *server) Bidding(topic string,conn *websocket.Conn,amount int){
+    bid, err := client.Get(ctx,topic).Result()
+	if err != nil {
+		panic(err)
+	}
+
+	if bid[current]>amount{
+		
 	}
 }
