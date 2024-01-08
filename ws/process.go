@@ -1,6 +1,8 @@
 package ws 
+
 import (
 	"sync"
+	"log"
 )
 
 const (
@@ -15,42 +17,7 @@ type Server struct {
 	subscription Subscription
 }
 
-func (ser *Server) Subscribe(topic string,conn *websocket.Conn) {
-	
-    append(ser.subscription[topic],)
-}
-
-// Unsubscribe the client to the particular topic   
-func (ser *Server) Unsubscribe(topic string) {
-	delete(ser[topic],conn) 
-}
-
-func (s *Server) Send(conn *websocket.Conn, message string) {
-	conn.WriteMessage(websocket.TextMessage, []byte(message))
-}
-
-
-func (s *Server) SendWithWait(conn *websocket.Conn, message string, wg *sync.WaitGroup) {
-	conn.WriteMessage(websocket.TextMessage, []byte(message))
-	wg.Done()
-}
-
-func (s *Server) Publish(topic string, message [] byte ){
-	Clients, err := client.Get(ctx,topic).Result()
-	if err != nil {
-		panic(err)
-	}
-
-	var wg sync.WaitGroup
-	for _,conn:=range Clients {
-	   wg.Add(1)
-       go s.SendWithWait(conn,message,&wg)
-	}
-	wg.Wait()
-
-}
-
-
+ 
 func (s *Server) ProcessMessage(conn *websocket.Conn,clientID string,msg byte[]) {
     m := Message{}
 	if err := json.Unmarshal(msg, &m); err != nil {
@@ -70,7 +37,7 @@ func (s *Server) ProcessMessage(conn *websocket.Conn,clientID string,msg byte[])
 			s.Unsubscribe(clientID, m.Topic)
 			
 		case bid:
-			s.Unsubscribe(clientID, m.Topic)
+			go s.PushToQueue(clientID,topic)
 			
 		default:
 			s.Send(conn, errActionUnrecognizable)
@@ -78,14 +45,44 @@ func (s *Server) ProcessMessage(conn *websocket.Conn,clientID string,msg byte[])
 }
 
 
-//BIDDING 
-func (s *server) Bidding(topic string,conn *websocket.Conn,amount int){
-    bid, err := client.Get(ctx,topic).Result()
+func (ser *Server) Subscribe(topic string,conn *websocket.Conn) {
+	
+    append(ser.subscription[topic],)
+}
+
+
+
+// Unsubscribe the client to the particular topic   
+func (ser *Server) Unsubscribe(topic string) {
+	delete(ser[topic],conn) 
+}
+
+func (s *Server) Send(conn *websocket.Conn, message string) {
+	conn.WriteMessage(websocket.TextMessage, []byte(message))
+}
+
+
+func (s *Server) SendWithWait(conn *websocket.Conn, message string, wg *sync.WaitGroup) {
+	conn.WriteMessage(websocket.TextMessage, []byte(message))
+	wg.Done()
+}
+
+
+func (s *Server) Publish(topic string, message [] byte ){
+	Clients, err := client.Get(ctx,topic).Result()
 	if err != nil {
 		panic(err)
 	}
-
-	if bid[current]>amount{
-		
+	
+	var wg sync.WaitGroup
+	for _,conn:=range Clients {
+	   wg.Add(1)
+       go s.SendWithWait(conn,message,&wg)
 	}
+	wg.Wait()
+}
+
+
+func (s *Server) PushToQueue(clientID,topic string){
+    
 }

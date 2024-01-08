@@ -8,9 +8,7 @@ import (
 	"github.com/paerarason/go-Auction/controller"
 )
 
-
 server:=&Server{subscriptionubscriptions: make(Subscription)}
-
 func WEBsocket(w http.ResponseWriter, r *http.Request) {
 	var upgrader = websocket.Upgrader{
     CheckOrigin: func(r *http.Request) bool { return true },}
@@ -23,6 +21,7 @@ func WEBsocket(w http.ResponseWriter, r *http.Request) {
 	
     clientID := uuid.New().String()
 	server.Send(conn,fmt.Sprintf("Hello! Your where connected to Server is %s", clientID))
+	
 	for {
 		// read incoming message
 		_, msg, err := conn.ReadMessage()
