@@ -15,7 +15,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-func JWTokenMiddlerware{
+func JWTokenMiddlerware(next http.Handler) http.Handler{
 	tokenString, err := c.Cookie("token")
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
