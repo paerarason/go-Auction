@@ -1,6 +1,8 @@
-package cotroller
+package controller
 import (
 	"net/http"
+	"log"
+	"encoding/json"
 )
 
 type Login struct {
@@ -16,7 +18,7 @@ func LoginHandler(w http.ResponseWriter,r *http.Request){
 	//jSON DECODING
 	var   user  Login
     err:=json.Unmarshal(&user,r.Body())
-	if err=nil{
+	if err!=nil{
 		log.Fatal(err)
 	}
 	
@@ -46,7 +48,7 @@ func LoginHandler(w http.ResponseWriter,r *http.Request){
 	expirationTime := time.Now().Add(10 * time.Hours)
 	claims := jwt.MapClaims{
         "account_id": accountID,
-		"username": username
+		"username": username,
 		"exp":expirationTime.Unix(),
     }
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,claims)

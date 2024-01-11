@@ -12,7 +12,6 @@ func main(){
 	mux.Handle("/api")
 	http.HandleFunc("/ws",ws.WEBsocket)
 	http.HandleFunc("/login",controller.LoginHandler)
-   
 	
     err := http.ListenAndServe(":3333", nil)  
 	if err==nil{

@@ -1,8 +1,15 @@
 package controller
+import (
+	"net/http"
+)
+
+
+
+
 
 //type 
 
-func Response(w *http.ResponseWriter,messageType,message string,code int8){
+func Response(w http.ResponseWriter,messageType,message string,code int8){
 	w.WriteHeader(code)
 	   w.Header().Set("Content-Type", "application/json")
 	   resp := make(map[string]string)
