@@ -9,16 +9,34 @@ import (
 )
 
 
-func DB_connection() (*sql.DB,error){
-	err := godotenv.Load(".env")
-    if err != nil {
-        log.Fatalf("Error loading .env file: %s", err)
-    }
-	connStr := os.Getenv("database_url")
-        db,err:=sql.Open("postgres",connStr)
-        if err != nil {
-     		log.Fatal(err)
-     	}
-		
-		return db,err
+func DB_connection() {
+	connectionString := "mongodb://localhost:27017"
+	databaseName := "yourDatabase"
+	newCollectionName := "newCollection"
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	client, err := mongo.Connect(ctx, options.Client().ApplyURI(connectionString))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer func() {
+		if err = client.Disconnect(ctx); err != nil {
+			log.Fatal(err)
+		}
+	}()
+	database := client.Database(databaseName)
+    collection := database.Collection(collectionName)
+	filter := bson.M{"username": "desiredUsername"}
+     
+	// Execute the query
+	cursor, err := collection.Find(ctx, filter)
+
+	var users []User
+	for cursor.Next(ctx) {
+		var user User
+		if err := cursor.Decode(&user); err != nil {
+			log.Fatal(err)
+		}
+		users = append(users, user)
+	}
 }

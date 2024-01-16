@@ -12,10 +12,13 @@ const (
 	bid         = "bidding"
 )
 
-type Server struct {
+type BID struct {
 	topic string
 	subscription Subscription
 }
+
+
+
 
  
 
